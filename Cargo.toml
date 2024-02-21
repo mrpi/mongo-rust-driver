@@ -29,7 +29,7 @@ exclude = [
 # NOTE: any new features added to this list should also be added to the features
 # list in the [package.metadata.docs.rs] section below.
 [features]
-default = ["tokio-runtime"]
+default = ["tokio-runtime", "webpki-roots"]
 tokio-runtime = [
     "tokio/macros",
     "tokio/net",
@@ -88,12 +88,15 @@ in-use-encryption-unstable = ["mongocrypt", "rayon", "num_cpus"]
 tracing-unstable = ["tracing", "log"]
 
 [dependencies]
-async-executor = { version = "=1.5.1", optional = true }  # TODO RUST-1768: remove this
+async-executor = { version = "=1.5.1", optional = true } # TODO RUST-1768: remove this
 async-trait = "0.1.42"
 base64 = "0.13.0"
 bitflags = "1.1.0"
 bson = { git = "https://github.com/mongodb/bson-rust", branch = "main" }
-chrono = { version = "0.4.7", default-features = false, features = ["clock", "std"] }
+chrono = { version = "0.4.7", default-features = false, features = [
+    "clock",
+    "std",
+] }
 derivative = "2.1.1"
 derive_more = "0.99.17"
 flate2 = { version = "1.0", optional = true }
@@ -129,7 +132,7 @@ tracing = { version = "0.1.36", optional = true }
 trust-dns-proto = "0.21.2"
 trust-dns-resolver = "0.21.2"
 typed-builder = "0.10.0"
-webpki-roots = "0.25.2"
+webpki-roots = { version = "0.25.2", optional = true }
 zstd = { version = "0.11.2", optional = true }
 
 [dependencies.async-std]
@@ -211,5 +214,5 @@ features = [
     "openssl-tls",
     "aws-auth",
     "tracing-unstable",
-    "in-use-encryption-unstable"
+    "in-use-encryption-unstable",
 ]

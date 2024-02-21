@@ -18,6 +18,7 @@ use rustls::{
 use rustls_pemfile::{certs, read_one, Item};
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio_rustls::TlsConnector;
+#[cfg(feature = "webpki-roots")]
 use webpki_roots::TLS_SERVER_ROOTS;
 
 use crate::{
@@ -113,14 +114,17 @@ fn make_rustls_config(cfg: TlsOptions) -> Result<rustls::ClientConfig> {
         })?;
         store.add_parsable_certificates(&ders);
     } else {
-        let trust_anchors = TLS_SERVER_ROOTS.iter().map(|ta| {
-            OwnedTrustAnchor::from_subject_spki_name_constraints(
-                ta.subject,
-                ta.spki,
-                ta.name_constraints,
-            )
-        });
-        store.add_trust_anchors(trust_anchors);
+        #[cfg(feature = "webpki-roots")]
+        {
+            let trust_anchors = TLS_SERVER_ROOTS.iter().map(|ta| {
+                OwnedTrustAnchor::from_subject_spki_name_constraints(
+                    ta.subject,
+                    ta.spki,
+                    ta.name_constraints,
+                )
+            });
+            store.add_trust_anchors(trust_anchors);    
+        }
     }
 
     let mut config = if let Some(path) = cfg.cert_key_file_path {
